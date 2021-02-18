@@ -1,15 +1,17 @@
+import json
 import discord
 from discord.ext import commands
 
-command_prefix = ">"  # If you Don't want '>' command Prefix then there you can change it
-client = commands.Bot(command_prefix)
+with open("config.json") as file:
+    config = json.load(file)
 
-# ----- ready message -----
+client = commands.Bot(command_prefix=config["prefix"], id=config["owner_id"])
 
+# ----------- On Ready ---------------
 
 @client.event
 async def on_ready():
-    print(f'{client.user} has connected to discord!')
+    print(f"{client.user} connected to discord.")
 
 # ----- automatic message deleting -----
 
@@ -39,7 +41,8 @@ commandlst = ["kick", "clear", "ban/unban", "mute/unmute"]
 
 @client.command()
 async def commandlist(ctx):
-    await ctx.send("Use '"+command_prefix+"' before the command")
+    p = config["prefix"]
+    await ctx.send(f"Use '{p}' before the command")
     for i in commandlst:
         await ctx.send(i)
 
@@ -113,6 +116,3 @@ async def unmute(ctx, member: discord.Member):
     await member.remove_roles(muted_role)
 
     await ctx.send(member.mention + " has been Unmuted!")
-
-token = "cool"
-client.run(Token)
