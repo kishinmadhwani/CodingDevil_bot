@@ -8,10 +8,16 @@ from datetime import date, timedelta
 with open("setup/Bot_config.json") as file:
     config = json.load(file)
 
-client = commands.Bot(command_prefix=config["prefix"], id=config["owner_id"])
+intents = discord.Intents.default()
+intents.members = True
+client = commands.Bot(command_prefix=config["prefix"], id=config["id"])
 client.remove_command("help")
 
 # ----------- functions ---------------
+
+def ping():
+    p = f"{round(client.latency)*100}ms"
+    return p
 
 def cur_time():
     t = time.localtime()
@@ -48,15 +54,15 @@ async def on_ready():
     me = await client.fetch_user(config["id"])
     print(f"Logged in at {cur_time()}")
     await me.send(f"``` Client Booted || No Error \n Time: {cur_time()} \n Date: {cur_date()}```")
-    await client.change_presence(activity=cur_activity(f"$help | {cur_guilds()} Guilds","watching"))
+    await client.change_presence(activity=cur_activity(f"{cur_guilds()} Guilds","watching"))
 
 # ------------- Cogs ---------------
 
 intial_extensions = [
-                        "cogs.basic"
-                        "cogs.support"
-                        "cogs.error"
-                        "cogs.Mod"
+                        "cogs.Basic",
+                        "cogs.Support",
+                        "cogs.Error",
+                        "cogs.Mod",
                     ]
 
 for extension in intial_extensions:
